@@ -349,23 +349,23 @@ void serve_static(int out_fd, int in_fd, http_request *req,
 
 void print_stat(struct stat sbuf)
 {
-	printf("stat sbuf.st_inode: 0x%lx(0%lo)\n", sbuf.st_ino, sbuf.st_ino);
-	printf("stat sbuf.st_mode: 0x%x(0%o), REG: 0%o, DIR: 0%o\n", sbuf.st_mode, sbuf.st_mode, 0100000, 0040000);
-	printf("stat sbuf.st_uid: 0x%x(0%o)\n", sbuf.st_uid, sbuf.st_uid);
-	printf("stat sbuf.st_gid: 0x%x(0%o)\n", sbuf.st_gid, sbuf.st_gid);
-	printf("stat sbuf.st_size: 0x%lx(0%lo)\n", sbuf.st_size, sbuf.st_size);
+    printf("stat sbuf.st_inode: 0x%lx(0%lo)\n", sbuf.st_ino, sbuf.st_ino);
+    printf("stat sbuf.st_mode: 0x%x(0%o), REG: 0%o, DIR: 0%o\n", sbuf.st_mode, sbuf.st_mode, 0100000, 0040000);
+    printf("stat sbuf.st_uid: 0x%x(0%o)\n", sbuf.st_uid, sbuf.st_uid);
+    printf("stat sbuf.st_gid: 0x%x(0%o)\n", sbuf.st_gid, sbuf.st_gid);
+    printf("stat sbuf.st_size: 0x%lx(0%lo)\n", sbuf.st_size, sbuf.st_size);
 }
 
 void print_http_request(http_request req)
 {
-	printf("filename: %s, offset: %lu, end: %lu\n", req.filename, req.offset, req.end);
+    printf("filename: %s, offset: %lu, end: %lu\n", req.filename, req.offset, req.end);
 }
 
 void process(int fd, struct sockaddr_in *clientaddr){
     printf("accept request, fd is %d, pid is %d\n", fd, getpid());
     http_request req;
     parse_request(fd, &req);
-	print_http_request(req);
+    print_http_request(req);
 
     struct stat sbuf;
     int status = 200, ffd = open(req.filename, O_RDONLY, 0);
@@ -375,10 +375,10 @@ void process(int fd, struct sockaddr_in *clientaddr){
         client_error(fd, status, "Not found", msg);
     } else {
         fstat(ffd, &sbuf);
-		printf("stat sbuf.st_mode: 0%o, REG: 0%o, DIR: 0%o\n\n", sbuf.st_mode, 0100000, 0040000);
-		print_stat(sbuf);
+        printf("stat sbuf.st_mode: 0%o, REG: 0%o, DIR: 0%o\n\n", sbuf.st_mode, 0100000, 0040000);
+        print_stat(sbuf);
         if(S_ISREG(sbuf.st_mode)){
-			// REG: Regular file, stat.h
+            // REG: Regular file, stat.h
             if (req.end == 0){
                 req.end = sbuf.st_size;
             }
@@ -387,7 +387,7 @@ void process(int fd, struct sockaddr_in *clientaddr){
             }
             serve_static(fd, ffd, &req, sbuf.st_size);
         } else if(S_ISDIR(sbuf.st_mode)){
-			// DIR: Directory
+            // DIR: Directory
             status = 200;
             handle_directory_request(fd, ffd, req.filename);
         } else {
